@@ -111,7 +111,6 @@ func (e *Email) bytes() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	htmlAttachments, otherAttachments := e.categorizeAttachments()
 	if len(e.HTML) == 0 && len(htmlAttachments) > 0 {
 		return nil, fmt.Errorf("there are HTML attachments, but no HTML body")
@@ -149,8 +148,8 @@ func (e *Email) bytes() ([]byte, error) {
 
 	if len(e.Text) > 0 || len(e.HTML) > 0 {
 		var subWriter *multipart.Writer
-
 		if isMixed && isAlternative {
+			subWriter = multipart.NewWriter(buf)
 			header := textproto.MIMEHeader{
 				"Content-Type": {"multipart/alternative;\r\n boundary=", subWriter.Boundary()},
 			}
@@ -245,6 +244,9 @@ func (e *Email) headers() (textproto.MIMEHeader, error) {
 	if _, ok := res["Cc"]; !ok && len(e.Cc) != 0 {
 		res.Set("Cc", strings.Join(e.Cc, ", "))
 	}
+	if _, ok := res["Subject"]; !ok && e.Subject != "" {
+		res.Set("Subject", e.Subject)
+	}
 	if _, ok := res["Message-Id"]; !ok {
 		id, err := generateMessageID()
 		if err != nil {
@@ -280,15 +282,15 @@ func (e *Email) categorizeAttachments() (htmlRelated, others []*attachment) {
 	return
 }
 
-func (e *Email) headersToBytes(buff io.Writer, header textproto.MIMEHeader) {
+func (e *Email) headersToBytes(buf io.Writer, header textproto.MIMEHeader) {
 	for field, vals := range header {
 		for _, subval := range vals {
-			io.WriteString(buff, field)
-			io.WriteString(buff, ": ")
+			io.WriteString(buf, field)
+			io.WriteString(buf, ": ")
 
 			switch {
 			case field == "Content-Type" || field == "Content-Disposition":
-				io.WriteString(buff, subval)
+				io.WriteString(buf, subval)
 			case field == "From" || field == "To" || field == "Cc" || field == "Bcc":
 				participants := strings.Split(subval, ",")
 				for i, v := range participants {
@@ -298,11 +300,11 @@ func (e *Email) headersToBytes(buff io.Writer, header textproto.MIMEHeader) {
 					}
 					participants[i] = addr.String()
 				}
-				io.WriteString(buff, strings.Join(participants, ", "))
+				io.WriteString(buf, strings.Join(participants, ", "))
 			default:
-				io.WriteString(buff, mime.QEncoding.Encode("UTF-8", subval))
+				io.WriteString(buf, mime.QEncoding.Encode("UTF-8", subval))
 			}
-			io.WriteString(buff, "\r\n")
+			io.WriteString(buf, "\r\n")
 		}
 	}
 }

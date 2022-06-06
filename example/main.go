@@ -8,7 +8,8 @@ import (
 )
 
 func main() {
-	SendHTML()
+	// SendHTML()
+	SendText()
 }
 
 func SendText() {
@@ -26,8 +27,11 @@ func SendText() {
 		// HTML:    []byte("<h1>Fancy HTML is supported, too!</h1>"),
 		Headers: textproto.MIMEHeader{},
 	}
-	e.AttachFile("")
-	err := e.Send("smtp.qq.com:25", smtp.PlainAuth("", "lcs.shun@foxmail.com", "ikpfnntluodtbadh", "smtp.qq.com"))
+	err := e.AttachFile("./shenghuo.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = e.Send("smtp.qq.com:25", smtp.PlainAuth("", "lcs.shun@foxmail.com", "ikpfnntluodtbadh", "smtp.qq.com"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,7 +45,7 @@ func SendHTML() {
 		HTML:    []byte("<h1>Fancy HTML is supported, too!</h1>"),
 		Headers: textproto.MIMEHeader{},
 	}
-	if err := e.AttachFile("./shenghuo"); err != nil {
+	if err := e.AttachFile("./shenghuo.txt"); err != nil {
 		log.Fatal(err)
 	}
 	err := e.Send("smtp.qq.com:25", smtp.PlainAuth("", "lcs.shun@foxmail.com", "ikpfnntluodtbadh", "smtp.qq.com"))

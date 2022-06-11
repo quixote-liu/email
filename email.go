@@ -159,7 +159,7 @@ func (e *Email) messageBody() ([]byte, error) {
 		if _, err := buf.Write(e.text.Bytes()); err != nil {
 			return nil, err
 		}
-		_, _ = buf.WriteString("\r\n")
+		buf.WriteString("\r\n")
 	}
 
 	if e.html != nil {
@@ -175,7 +175,7 @@ func (e *Email) messageBody() ([]byte, error) {
 		if _, err := buf.Write(e.html.Bytes()); err != nil {
 			return nil, err
 		}
-		_, _ = buf.WriteString("\r\n")
+		buf.WriteString("\r\n")
 	}
 
 	for _, at := range e.attachments {
@@ -191,11 +191,11 @@ func (e *Email) messageBody() ([]byte, error) {
 func (e *Email) writeHeadersToBody(buf *bytes.Buffer, headers textproto.MIMEHeader) error {
 	for field, values := range headers {
 		for _, subval := range values {
-			_, _ = buf.WriteString(field)
+			buf.WriteString(field)
 			buf.WriteString(": ")
 			switch {
 			case field == "Content-Type" || field == "Content-Dispostion":
-				_, _ = buf.WriteString(subval)
+				buf.WriteString(subval)
 			case field == "From" || field == "To" || field == "CC" || field == "BCC":
 				parts := strings.Split(subval, ",")
 				for i, v := range parts {
@@ -205,14 +205,14 @@ func (e *Email) writeHeadersToBody(buf *bytes.Buffer, headers textproto.MIMEHead
 					}
 					parts[i] = addr.Address
 				}
-				_, _ = buf.WriteString(strings.Join(parts, ", "))
+				buf.WriteString(strings.Join(parts, ", "))
 			default:
-				_, _ = buf.WriteString(mime.QEncoding.Encode("UTF-8", subval))
+				buf.WriteString(mime.QEncoding.Encode("UTF-8", subval))
 			}
-			_, _ = buf.WriteString("\r\n")
+			buf.WriteString("\r\n")
 		}
 	}
-	_, _ = buf.WriteString("\r\n")
+	buf.WriteString("\r\n")
 	return nil
 }
 

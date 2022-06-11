@@ -8,8 +8,8 @@ import (
 
 func main() {
 	// SendText()
-	// SendHTML()
-	Send()
+	SendHTML()
+	// Send()
 }
 
 func SendText() {
@@ -52,7 +52,7 @@ func SendHTML() {
 	}
 	auth := smtp.PlainAuth("", "lcs.shun@foxmail.com", "ikpfnntluodtbadh", "smtp.qq.com")
 
-	text := `<h1>testing email<h1>`
+	text := `<h1>testing email !</h1>`
 	e.SetAuth(auth).WriteHTML([]byte(text))
 
 	// if err := e.AttachFile("./shenghuo.txt"); err != nil {

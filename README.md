@@ -1,6 +1,11 @@
 # email
-一个可以发送邮件工具。发送普通邮件示例:
+参考github.com/jordan-wright/email和smtp协议写的一个可以发送邮件的工具，主要以学习为目的。其发送普通邮件示例:
 ```golang
+    import (
+        "net/smtp"
+        "github.com/quixote-liu/email"
+    )
+
     func main() {
         e := email.Email{
             From:     "your_email@mail.com",
@@ -26,4 +31,3 @@
     }
 ```
 
-参考github.com/jordan-wright/email和smtp协议写的一个可以发送邮件的工具，主要以学习为目的。

@@ -159,6 +159,7 @@ func (e *Email) messageBody() ([]byte, error) {
 		if _, err := buf.Write(e.text.Bytes()); err != nil {
 			return nil, err
 		}
+		_, _ = buf.WriteString("\r\n")
 	}
 
 	if e.html != nil {
@@ -174,9 +175,8 @@ func (e *Email) messageBody() ([]byte, error) {
 		if _, err := buf.Write(e.html.Bytes()); err != nil {
 			return nil, err
 		}
+		_, _ = buf.WriteString("\r\n")
 	}
-
-	_, _ = buf.WriteString("\r\n")
 
 	for _, at := range e.attachments {
 		if _, err := writer.CreatePart(at.header); err != nil {

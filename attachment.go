@@ -13,7 +13,6 @@ type attachment struct {
 	contentType string
 	header      textproto.MIMEHeader
 	content     *bytes.Buffer
-	related     bool
 }
 
 func (at *attachment) setDefaultHeader() {
@@ -29,11 +28,7 @@ func (at *attachment) setDefaultHeader() {
 	at.header.Set("Content-Type", ct)
 
 	// set disposition
-	disposition := fmt.Sprintf("attachment; filename='%s'", at.filename)
-	if at.related {
-		disposition = "inline"
-	}
-	at.header.Set("Content-Disposition", disposition)
+	at.header.Set("Content-Disposition", fmt.Sprintf("attachment; filename='%s'", at.filename))
 
 	// set content-id
 	id, _ := generateContentID(at.filename)

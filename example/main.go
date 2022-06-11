@@ -58,6 +58,12 @@ func SendHTML() {
 	if err := e.AttachFile("./shenghuo.txt"); err != nil {
 		log.Fatal(err)
 	}
+	if err := e.AttachFile("./photo.png"); err != nil {
+		log.Fatal(err)
+	}
+	if err := e.AttachFile("./email"); err != nil {
+		log.Fatal(err)
+	}
 
 	err := e.Send()
 	if err != nil {

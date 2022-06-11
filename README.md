@@ -8,15 +8,16 @@
             Subject:  "This is Subject",
             Addr:     "smtp.example.com:25",
         }
-        auth := smtp.PlainAuth("", "your_email@mail.com", "your_password", "smtp.example.com")
-
-        e.SetAuth(auth).e.WriteText([]byte("hello, world"))
 
         if err := e.AttachFile("./filename.txt"); err != nil {
         	log.Fatal(err)
         }
 
-        if err := e.Send(); err != nil {
+        auth := smtp.PlainAuth("", "your_email@mail.com", "your_password", "smtp.example.com")
+        message := []byte("hello, world")
+
+        err := e.SetAuth(auth).WriteText(message).Send()
+        if err != nil {
             log.Fatal(err)
         }
 

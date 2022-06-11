@@ -237,8 +237,6 @@ func (e *Email) Send() error {
 		return err
 	}
 
-	fmt.Println("message:", string(bytes))
-
 	return smtp.SendMail(e.Addr, e.auth, sender, to, bytes)
 }
 

@@ -25,3 +25,14 @@ func generateMessageID() (string, error) {
 	id := fmt.Sprintf("<%d.%d.%d@%s>", t, pid, rint, h)
 	return id, nil
 }
+
+func generateContentID(partname string) (string, error) {
+	t := time.Now().UnixNano()
+	pid := os.Getpid()
+	rint, err := rand.Int(rand.Reader, maxBigInt)
+	if err != nil {
+		return "", err
+	}
+	id := fmt.Sprintf("<%d.%d.%d@%s>", t, pid, rint, partname)
+	return id, nil
+}
